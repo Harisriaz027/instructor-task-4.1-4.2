@@ -9,37 +9,53 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody enemyRb;
     public bool ispresent = true;
     public GameObject active;
-    int r;
+    public int i;
     void Start()
     {
-        active = RandomEnemy();
+        i = 0;
+        active = player[Random.Range(0, player.Length)];
         enemyRb = GetComponent<Rigidbody>();
     }
 
     
     void Update()
     {
-        if (ispresent == true && player[r] != null)
+        if (ispresent == true && active != null)
         {
-            Vector3 lookDirection = (player[r].transform.position - transform.position).normalized;
+            Vector3 lookDirection = (active.transform.position - transform.position).normalized;
             enemyRb.AddForce(lookDirection * speed * 3);
 
+            if (active.transform.position.y < -.5f)
+            {
 
+                Destroy(active.gameObject);
+                active = null;
+            }
+        }
+        
             if (transform.position.y < -.5f)
             {
                 Destroy(gameObject);
             }
-            else if (player[r].transform.position.y < -.5f)
-            {
-                ispresent = false;
-                Destroy(player[r].gameObject);
+        
+        if (ispresent == true && active == null) 
+        { 
                 RandomEnemy();
             }
+        
+        if (ispresent == false &&active != null)
+        {
+
+            ispresent = true;
+        }
+        if(ispresent==false&& active == null) 
+        {
+            enemyRb.velocity = Vector3.zero;
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject==player[r])
+        if (collision.gameObject==active)
         {
             
             Vector3 push = (collision.transform.position - transform.position).normalized;
@@ -49,8 +65,24 @@ public class EnemyMovement : MonoBehaviour
     }
     public GameObject RandomEnemy()
     {
-        r = Random.Range(0, player.Length);
-        ispresent = true;
-        return player[r];
+       
+        active = player[i];
+        if (active == null&&i<3)
+        {
+            i++;
+            RandomEnemy();
+        }
+        if (active == null && i== 3)
+        {
+            ispresent = false ;
+        }
+        if (active != null && i <=3)
+        {
+            ispresent = true;
+        }
+
+        return active;
     }
+        
+    
 }
