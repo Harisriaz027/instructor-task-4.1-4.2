@@ -31,7 +31,5 @@ public class PlayerContoller : MonoBehaviour
             Vector3 push = (collision.transform.position - transform.position)  ;
             collision.gameObject.GetComponent<Rigidbody>().AddForce(push  * 12,ForceMode.Impulse);
         }
-        
     }
-
 }
